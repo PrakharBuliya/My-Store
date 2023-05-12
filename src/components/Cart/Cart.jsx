@@ -13,6 +13,12 @@ const Cart = ({ setShowCart }) => {
             <span className="text">Close</span>
           </span>
         </div>
+
+        <div className="empty-cart">
+          <BsCartX />
+          <span>No Products in the cart.</span>
+          <button className="return-cta">RETURN TO SHOP</button>
+        </div>
       </div>
     </div>
   );
