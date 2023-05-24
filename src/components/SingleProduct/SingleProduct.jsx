@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import RelatedProducts from "./RelatedProducts/RelatedProducts";
 import {
   FaFacebookF,
@@ -9,13 +11,24 @@ import {
 } from "react-icons/fa";
 import "./SingleProduct.scss";
 
-import prod from "../../assets/products/earbuds-prod-1.webp";
 import usefetch from "../../hooks/usefetch";
 import { useParams } from "react-router-dom";
 
 const SingleProduct = () => {
+  const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
   const { data } = usefetch(`/api/products?populate=*&[filters][id]=${id}`);
+
+  const increment = () => {
+    setQuantity((prevState) => prevState + 1);
+  };
+
+  const decrement = () => {
+    setQuantity((prevState) => {
+      if (prevState === 1) return 1;
+      return prevState - 1;
+    });
+  };
 
   if (!data) return;
   const product = data.data[0].attributes;
@@ -40,9 +53,9 @@ const SingleProduct = () => {
 
             <div className="cart-buttons">
               <div className="quantity-buttons">
-                <span>-</span>
-                <span>5</span>
-                <span>+</span>
+                <span onClick={decrement}>-</span>
+                <span>{quantity}</span>
+                <span onClick={increment}>+</span>
               </div>
               <button className="add-to-cart-button">
                 <FaCartPlus size={20} />
@@ -53,8 +66,8 @@ const SingleProduct = () => {
             <span className="divider" />
             <div className="info-item">
               <span className="text-bold">
-                Category:
-                <span>Headphones</span>
+                Category:{" "}
+                <span>{product.categories.data[0].attributes.title}</span>
               </span>
 
               <span className="text-bold">
@@ -70,7 +83,10 @@ const SingleProduct = () => {
             </div>
           </div>
         </div>
-        <RelatedProducts />
+        <RelatedProducts
+          productId={id}
+          categoryId={product.categories.data[0].id}
+        />
       </div>
     </div>
   );
