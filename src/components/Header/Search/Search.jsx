@@ -1,12 +1,22 @@
 import "./Search.scss";
 import { MdClose } from "react-icons/md";
 import prod from "../../../assets/products/earbuds-prod-1.webp";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Search = ({ setShowSearch }) => {
+  const [query, setQuery] = useState();
+  const navigate = useNavigate();
+
   return (
     <div className="search-modal">
       <div className="form-field">
-        <input type="text" autoFocus placeholder="Search for Products" />
+        <input
+          type="text"
+          autoFocus
+          placeholder="Search for Products"
+          value={query}
+        />
 
         <MdClose className="close-btn" onClick={() => setShowSearch(false)} />
       </div>
