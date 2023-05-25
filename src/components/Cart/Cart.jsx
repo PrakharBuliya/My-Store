@@ -4,10 +4,29 @@ import "./Cart.scss";
 import CartItem from "./CartItem/CartItem";
 import { useContext } from "react";
 import { Context } from "../../utils/Context";
+import { loadStripe } from "@stripe/stripe-js";
+import { makePaymentRequest } from "../../utils/api";
 
 const Cart = ({ setShowCart }) => {
   const { cartItems, cartSubTotal } = useContext(Context);
 
+  const stripePromise = loadStripe(
+    process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY
+  );
+
+  const handlePayment = async () => {
+    try {
+      const stripe = await stripePromise;
+      const res = await makePaymentRequest.post("/api/orders", {
+        products: cartItems,
+      });
+      await stripe.redirectToCheckout({
+        sessionId: res.data.stripeSession.id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="cart-panel">
       <div className="opac-layer"></div>
@@ -24,7 +43,9 @@ const Cart = ({ setShowCart }) => {
           <div className="empty-cart">
             <BsCartX />
             <span>No Products in the cart.</span>
-            <button className="return-cta">RETURN TO SHOP</button>
+            <button onClick={() => setShowCart(false)} className="return-cta">
+              RETURN TO SHOP
+            </button>
           </div>
         )}
 
@@ -38,7 +59,9 @@ const Cart = ({ setShowCart }) => {
               </div>
 
               <div className="button">
-                <button className="checkout-cta">Checkout</button>
+                <button className="checkout-cta" onClick={handlePayment}>
+                  Checkout
+                </button>
               </div>
             </div>
           </>
