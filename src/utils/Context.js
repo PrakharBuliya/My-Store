@@ -34,6 +34,7 @@ const AppContext = ({ children }) => {
     if (index !== -1) {
       items[index].attributes.quantity += quantity;
     } else {
+      console.log('### product-', product)
       product.attributes.quantity = quantity;
       items = [...items, product];
     }

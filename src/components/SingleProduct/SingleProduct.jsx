@@ -14,6 +14,7 @@ import "./SingleProduct.scss";
 import usefetch from "../../hooks/usefetch";
 import { useParams } from "react-router-dom";
 import { Context } from "../../utils/Context";
+import { PRODUCTS } from "../../utils/constants";
 
 const SingleProduct = () => {
   const [quantity, setQuantity] = useState(1);
@@ -33,7 +34,10 @@ const SingleProduct = () => {
   };
 
   if (!data) return;
-  const product = data.data[0].attributes;
+
+  const product = PRODUCTS?.data?.find(
+    (res) => res?.id === parseInt(id)
+  )?.attributes;
 
   return (
     <div className="single-product-main-content">
@@ -42,16 +46,16 @@ const SingleProduct = () => {
           <div className="left">
             <img
               src={
-                process.env.REACT_APP_DEV_URL +
-                product.img.data[0].attributes.url
+                // process.env.REACT_APP_DEV_URL +
+                product?.img?.data?.[0]?.attributes?.url
               }
               alt=""
             />
           </div>
           <div className="right">
-            <span className="name">{product.title}</span>
-            <span className="price">&#8377;{product.price}</span>
-            <span className="desc">{product.desc}</span>
+            <span className="name">{product?.title}</span>
+            <span className="price">&#8377;{product?.price}</span>
+            <span className="desc">{product?.desc}</span>
 
             <div className="cart-buttons">
               <div className="quantity-buttons">
@@ -62,7 +66,7 @@ const SingleProduct = () => {
               <button
                 className="add-to-cart-button"
                 onClick={() => {
-                  handleAddToCart(data.data[0], quantity);
+                  handleAddToCart(product, quantity);
                   setQuantity(1);
                 }}
               >
@@ -75,7 +79,7 @@ const SingleProduct = () => {
             <div className="info-item">
               <span className="text-bold">
                 Category:{" "}
-                <span>{product.categories.data[0].attributes.title}</span>
+                <span>{product?.categories?.data?.[0]?.attributes?.title}</span>
               </span>
 
               <span className="text-bold">
@@ -93,7 +97,7 @@ const SingleProduct = () => {
         </div>
         <RelatedProducts
           productId={id}
-          categoryId={product.categories.data[0].id}
+          categoryId={product?.categories?.data?.[0]?.id}
         />
       </div>
     </div>
